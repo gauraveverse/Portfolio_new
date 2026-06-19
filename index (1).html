@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbox – gauravdotorg@gmail.com</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #f0f4f9;
+  --white: #fff;
+  --border: #e0e0e0;
+  --blue: #0b57d0;
+  --text: #202124;
+  --muted: #444746;
+  --light: #5f6368;
+  --hover: #e8eaed;
+  --active-bg: #d3e3fd;
+  --row-hover: #f1f3f4;
+  --sidebar-w: 270px;
+}
+
+body {
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════
+   TOP BAR  (Image 1 exact match)
+═══════════════════════════════ */
+.topbar {
+  height: 64px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* hamburger */
+.hamburger {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--hover); }
+.hamburger span { display:block; width:18px; height:2px; background:#444746; border-radius:2px; }
+
+/* Gmail M logo — multicolor exactly like Image 1 */
+.gmail-logo {
+  display: flex; align-items: center; gap: 6px;
+  flex-shrink: 0; margin-right: 4px;
+}
+.gmail-logo svg { width:36px; height:26px; }
+.gmail-logo-text {
+  font-size: 22px; font-weight: 400; color: #444746;
+  letter-spacing: -0.3px;
+}
+
+/* Search bar — exact from Image 1 */
+.search-wrap { flex:1; display:flex; justify-content:center; }
+.search-box {
+  display: flex; align-items: center;
+  background: #eaf1fb;
+  border-radius: 28px;
+  padding: 0 12px 0 20px;
+  height: 48px;
+  width: 100%;
+  max-width: 700px;
+  gap: 12px;
+  transition: box-shadow .15s, background .15s;
+}
+.search-box:focus-within {
+  background: var(--white);
+  box-shadow: 0 2px 8px #0002;
+}
+.search-box input {
+  flex: 1; border: none; background: transparent;
+  font-size: 16px; outline: none; color: var(--text); font-family: inherit;
+}
+.search-box input::placeholder { color: #444746; }
+.search-icon { color: #444746; flex-shrink:0; display:flex; }
+.search-filter-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0;
+}
+.search-filter-btn:hover { background: rgba(0,0,0,.08); }
+
+/* Right icons: ? ⚙ ⬡(4-color) ⠿ G — NO Gemini star */
+.topbar-right {
+  display:flex; align-items:center; gap:4px; margin-left:auto; flex-shrink:0;
+}
+.tb-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color: #444746;
+}
+.tb-icon:hover { background: var(--hover); }
+.avatar-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #c0392b;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:14px; font-weight:600; cursor:pointer;
+  margin-left: 6px;
+}
+
+/* ═══════════════════════════════
+   APP BODY
+═══════════════════════════════ */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════
+   SIDEBAR (Image 2 exact match)
+═══════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 8px 0 16px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.compose-btn {
+  display: flex; align-items: center; gap: 14px;
+  margin: 4px 12px 16px;
+  background: #c2e7ff;
+  border: none; border-radius: 18px;
+  padding: 16px 24px;
+  font-size: 15px; font-weight: 500; color: #001d35;
+  cursor: pointer; font-family: inherit;
+  transition: box-shadow .15s, background .1s;
+  width: calc(100% - 24px);
+}
+.compose-btn:hover { box-shadow: 0 2px 8px #0002; }
+
+/* nav items — Image 2 style */
+.nav-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 6px 24px 6px 20px;
+  border-radius: 0 28px 28px 0;
+  margin-right: 16px;
+  cursor: pointer; font-size: 14px; color: var(--text);
+  height: 40px; transition: background .1s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-item:hover { background: var(--hover); }
+.nav-item.active { background: var(--active-bg); font-weight: 700; }
+.nav-item .ni-icon { width:22px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.nav-item .ni-label { flex:1; }
+.nav-item .ni-count { font-size:12px; color:var(--text); font-weight:400; }
+.nav-item.active .ni-count { font-weight:700; }
+
+.nav-divider { height:1px; background:#e0e0e0; margin:8px 16px; }
+
+.nav-section {
+  font-size:13px; color:var(--muted);
+  padding: 6px 20px; cursor:pointer;
+  display:flex; align-items:center; gap:16px;
+  height:40px; border-radius:0 28px 28px 0; margin-right:16px;
+}
+.nav-section:hover { background:var(--hover); }
+
+/* Upgrade bar */
+.upgrade-bar {
+  display:flex; align-items:center; gap:12px;
+  padding: 10px 20px; margin-top:auto;
+  cursor:pointer; font-size:14px; color:var(--text);
+  border-top:1px solid var(--border);
+}
+.upgrade-bar:hover { background:var(--hover); }
+.upgrade-bar .ub-arrow { margin-left:auto; }
+
+/* ═══════════════════════════════
+   MAIN INBOX AREA
+═══════════════════════════════ */
+.inbox-wrap {
+  flex:1; display:flex; flex-direction:column; overflow:hidden;
+  background: var(--white);
+  border-radius: 16px;
+  margin: 8px 8px 8px 0;
+  border: 1px solid #c4c7c5;
+}
+
+/* Toolbar — Image 3 top bar */
+.inbox-toolbar {
+  display:flex; align-items:center; gap:2px;
+  padding: 8px 12px; height:48px; flex-shrink:0;
+  border-bottom: 1px solid var(--border);
+}
+.tbar-btn {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted);
+}
+.tbar-btn:hover { background:var(--hover); }
+.tbar-select { display:flex; align-items:center; gap:0; }
+.tbar-caret {
+  width:20px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted);
+}
+.pg-count {
+  margin-left:auto; font-size:13px; color:var(--muted);
+  display:flex; align-items:center; gap:2px;
+}
+.pg-arrow {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted);
+}
+.pg-arrow:hover:not(.disabled) { background:var(--hover); }
+.pg-arrow.disabled { opacity:.4; cursor:default; }
+
+/* right side mini-icons (Image 3 right side: calendar, bulb, check, person, +) */
+.right-strip {
+  width: 56px; flex-shrink:0;
+  background: var(--bg);
+  display:flex; flex-direction:column; align-items:center;
+  padding: 12px 0; gap:8px;
+  border-left:1px solid #e0e0e0;
+}
+.rs-icon {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); position:relative;
+}
+.rs-icon:hover { background:var(--hover); }
+.rs-icon .badge {
+  position:absolute; top:5px; right:5px;
+  width:8px; height:8px; background:#0b57d0; border-radius:50%;
+}
+.rs-divider { width:24px; height:1px; background:#e0e0e0; }
+.rs-plus {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); font-size:22px; font-weight:300;
+}
+.rs-plus:hover { background:var(--hover); }
+
+/* ── Tabs (Image 3) ── */
+.inbox-tabs {
+  display:flex; border-bottom:1px solid var(--border);
+  flex-shrink:0; background:var(--white);
+}
+.tab {
+  display:flex; align-items:center; gap:10px;
+  padding: 0 28px; height:52px;
+  font-size:14px; color:var(--muted);
+  cursor:pointer; border-bottom:3px solid transparent;
+  transition:background .1s; white-space:nowrap;
+  user-select:none;
+}
+.tab:hover { background:#f8f9fa; }
+.tab.active { color:var(--blue); border-bottom-color:var(--blue); font-weight:500; }
+
+/* ── Email rows (Image 3 exact) ── */
+.email-list { flex:1; overflow-y:auto; background:var(--white); }
+
+.email-row {
+  display:flex; align-items:center;
+  padding: 0 12px;
+  height: 50px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor:pointer; position:relative;
+  background: var(--white);
+  transition: background .08s;
+}
+.email-row:hover { background: var(--row-hover); z-index:1; }
+.email-row.unread .e-sender { font-weight:700; }
+.email-row.unread .e-subject { font-weight:700; }
+.email-row.unread .e-date { font-weight:700; color:var(--text); }
+
+/* checkbox col */
+.e-check {
+  width:52px; display:flex; align-items:center; justify-content:flex-start;
+  gap:6px; flex-shrink:0; padding-left:2px;
+}
+.e-cb {
+  width:18px; height:18px; border:2px solid #666;
+  border-radius:3px; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.e-cb.checked { background:var(--blue); border-color:var(--blue); }
+.e-cb.checked::after { content:'✓'; color:#fff; font-size:11px; }
+.e-star { font-size:17px; color:#ccc; cursor:pointer; flex-shrink:0; line-height:1; }
+.e-star.on { color:#f4b400; }
+.email-row:hover .e-star:not(.on) { color:#bbb; }
+
+.e-sender {
+  width:160px; flex-shrink:0;
+  font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  color:var(--text); padding-right:8px;
+}
+
+.e-body {
+  flex:1; display:flex; align-items:center; overflow:hidden; min-width:0;
+}
+.e-subject {
+  font-size:14px; color:var(--text);
+  white-space:nowrap; flex-shrink:0;
+  max-width:300px; overflow:hidden; text-overflow:ellipsis;
+}
+.e-preview {
+  font-size:14px; color:var(--light);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  padding-left:6px;
+}
+.e-preview::before { content:' - '; }
+
+/* hover action icons (Image 3: archive, delete, mark-read, snooze) */
+.e-actions {
+  display:none; align-items:center; gap:2px; flex-shrink:0;
+}
+.email-row:hover .e-actions { display:flex; }
+.email-row:hover .e-date { display:none; }
+
+.ea-btn {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted);
+}
+.ea-btn:hover { background:#e0e0e0; }
+
+/* unsubscribe badge on row hover */
+.unsub-badge {
+  font-size:12px; border:1px solid #ccc; border-radius:4px;
+  padding:2px 8px; color:var(--muted); cursor:pointer; flex-shrink:0;
+}
+.unsub-badge:hover { background:#f1f3f4; }
+
+.e-date {
+  font-size:12px; color:var(--muted);
+  white-space:nowrap; margin-left:8px; flex-shrink:0;
+}
+
+/* empty state */
+.empty-state {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  flex:1; color:var(--light); padding:60px 20px; text-align:center;
+}
+.empty-state .es-icon { font-size:72px; margin-bottom:16px; opacity:.5; }
+.empty-state h3 { font-size:18px; font-weight:400; margin-bottom:8px; color:var(--muted); }
+.empty-state p { font-size:14px; color:var(--light); }
+
+/* ── Detail pane ── */
+.detail-overlay {
+  display:none; position:fixed; inset:0; z-index:400; background:rgba(0,0,0,.08);
+}
+.detail-overlay.open { display:block; }
+.detail-pane {
+  position:fixed; top:0; right:0; bottom:0;
+  width:min(720px,96vw); background:var(--white);
+  box-shadow:-4px 0 24px #0002; display:none;
+  flex-direction:column; z-index:401;
+  animation:slideIn .18s ease;
+}
+.detail-pane.open { display:flex; }
+@keyframes slideIn {
+  from { transform:translateX(50px); opacity:0; }
+  to   { transform:translateX(0); opacity:1; }
+}
+.d-topbar {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 16px; border-bottom:1px solid var(--border);
+  flex-shrink:0; min-height:56px;
+}
+.d-back {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:20px; color:var(--muted);
+}
+.d-back:hover { background:var(--row-hover); }
+.d-title { font-size:20px; font-weight:400; flex:1; }
+.d-tag {
+  font-size:12px; font-weight:500; padding:2px 10px; border-radius:4px;
+  background:#e8f0fe; color:#1a73e8;
+}
+.d-tag.g { background:#e6f4ea; color:#137333; }
+.d-tag.y { background:#fef3e2; color:#b46300; }
+.d-tag.r { background:#fce8e6; color:#c5221f; }
+
+.d-body { flex:1; overflow-y:auto; padding:24px 32px; }
+.d-msg-head { display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; }
+.d-avatar {
+  width:40px; height:40px; border-radius:50%; background:#1a73e8;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:15px; font-weight:600; flex-shrink:0;
+}
+.d-from { flex:1; }
+.d-name { font-size:14px; font-weight:600; }
+.d-email { font-size:12px; color:var(--light); }
+.d-time { font-size:12px; color:var(--light); }
+.d-content { font-size:14px; line-height:1.75; }
+.d-content h3 { font-size:15px; font-weight:600; margin-bottom:10px; }
+.d-content p { margin-bottom:12px; }
+.d-content a { color:#1a73e8; text-decoration:none; }
+.d-content a:hover { text-decoration:underline; }
+
+.chip-row { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.chip {
+  background:#e8f0fe; color:#1a73e8; border-radius:16px;
+  padding:6px 14px; font-size:13px; font-weight:500;
+}
+
+.proj-card {
+  border:1px solid var(--border); border-radius:8px;
+  padding:16px; margin-bottom:12px; display:block;
+  text-decoration:none; color:inherit;
+  transition:background .12s, box-shadow .12s;
+}
+.proj-card:hover { background:#f8f9fa; box-shadow:0 2px 8px #0001; }
+.proj-card h4 { font-size:14px; font-weight:600; margin-bottom:4px; }
+.proj-card p { font-size:13px; color:var(--light); }
+.proj-link { font-size:12px; color:#1a73e8; margin-top:8px; display:block; }
+
+.c-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; font-size:14px; }
+.c-row a { color:#1a73e8; text-decoration:none; }
+.c-row a:hover { text-decoration:underline; }
+
+.cta-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#0b57d0; color:#fff; border-radius:20px;
+  padding:10px 24px; font-size:14px; font-weight:500;
+  text-decoration:none; margin-top:8px;
+  transition:background .15s;
+}
+.cta-btn:hover { background:#0842a0; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-thumb { background:#ccc; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOP BAR ═══════ -->
+<div class="topbar">
+  <!-- Hamburger -->
+  <div class="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Gmail logo (multicolor M) -->
+  <div class="gmail-logo">
+    <svg viewBox="0 0 36 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Red left panel -->
+      <path d="M2 4.5L2 21.5C2 22.88 3.12 24 4.5 24L8 24L8 12.5L18 19.5L28 12.5L28 24L31.5 24C32.88 24 34 22.88 34 21.5L34 4.5C34 2.2 31.3 0.8 29.4 2.2L18 10.5L6.6 2.2C4.7 0.8 2 2.2 2 4.5Z" fill="#EA4335"/>
+      <!-- Left dark red -->
+      <path d="M2 4.5L2 9L8 13L8 24L4.5 24C3.12 24 2 22.88 2 21.5L2 4.5Z" fill="#C5221F"/>
+      <!-- Right dark red -->
+      <path d="M34 4.5L34 9L28 13L28 24L31.5 24C32.88 24 34 22.88 34 21.5L34 4.5Z" fill="#C5221F"/>
+      <!-- Blue bottom-left -->
+      <path d="M2 9L8 13L8 24L2 24L2 9Z" fill="#0066DA"/>
+      <!-- Green bottom-right -->  
+      <path d="M34 9L28 13L28 24L34 24L34 9Z" fill="#00A94F"/>
+      <!-- Yellow center -->
+      <path d="M8 13L18 19.5L28 13L28 24L8 24Z" fill="#FFBA00"/>
+    </svg>
+    <span class="gmail-logo-text">Gmail</span>
+  </div>
+
+  <!-- Search bar -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </span>
+      <input type="text" placeholder="Search mail">
+      <div class="search-filter-btn">
+        <!-- Sliders icon (filter) from Image 1 -->
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M4 6h16v2H4V6zm2 5h12v2H6v-2zm2 5h8v2H8v-2z"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right icons: ? ⚙ apps-grid avatar -->
+  <div class="topbar-right">
+    <div class="tb-icon" title="Help & Feedback">
+      <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#444746" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+    </div>
+    <div class="tb-icon" title="Settings">
+      <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#444746" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    </div>
+    <div class="tb-icon" title="Google apps">
+      <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#444746" d="M6 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 14c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 20c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+    </div>
+    <div class="avatar-circle" title="Google Account">G</div>
+  </div>
+</div>
+
+<!-- ═══════ APP BODY ═══════ -->
+<div class="app-body">
+
+  <!-- ═══════ SIDEBAR ═══════ -->
+  <aside class="sidebar">
+    <button class="compose-btn" onclick="openDetail('contact')">
+      <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#001d35" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      Compose
+    </button>
+
+    <a class="nav-item" id="nav-inbox" onclick="showPage('inbox',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#202124" d="M19 3H4.99C3.89 3 3 3.89 3 5L3 19c0 1.11.89 2 2 2h14c1.1 0 2-.89 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H5V5h14v10z"/></svg></span>
+      <span class="ni-label">Inbox</span>
+      <span class="ni-count" id="inbox-count">4</span>
+    </a>
+    <a class="nav-item" id="nav-starred" onclick="showPage('starred',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>
+      <span class="ni-label">Starred</span>
+    </a>
+    <a class="nav-item" id="nav-snoozed" onclick="showPage('snoozed',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l4.75 2.85.75-1.23-4-2.37V8zM12 4a9 9 0 1 0 0 18A9 9 0 0 0 12 4zm0 16a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg></span>
+      <span class="ni-label">Snoozed</span>
+    </a>
+    <a class="nav-item" id="nav-sent" onclick="showPage('sent',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></span>
+      <span class="ni-label">Sent</span>
+    </a>
+    <a class="nav-item" id="nav-drafts" onclick="showPage('drafts',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></span>
+      <span class="ni-label">Drafts</span>
+    </a>
+    <a class="nav-item" id="nav-purchases" onclick="showPage('purchases',this)" href="#">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg></span>
+      <span class="ni-label">Purchases</span>
+    </a>
+
+    <!-- Less toggle -->
+    <div class="nav-section" onclick="toggleMore(this)">
+      <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg></span>
+      <span>Less</span>
+    </div>
+
+    <div id="more-items">
+      <a class="nav-item" id="nav-important" onclick="showPage('important',this)" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M11 17H9V8h2v9zm4-9h-2v9h2V8zM12 3 1 9l4 2.18V17h2v2h10v-2h2v-5.82L23 9 12 3zm6 7.99-6 3.27-6-3.27V10.9L12 7.7l6 3.2v.09z"/></svg></span>
+        <span class="ni-label">Important</span>
+      </a>
+      <a class="nav-item" id="nav-scheduled" onclick="showPage('scheduled',this)" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L11 13V7h1.5v5.25l4.5 2.67-1.77 1.08z"/></svg></span>
+        <span class="ni-label">Scheduled</span>
+      </a>
+      <a class="nav-item" id="nav-allmail" onclick="showPage('allmail',this)" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+        <span class="ni-label">All Mail</span>
+      </a>
+      <a class="nav-item" id="nav-spam" onclick="showPage('spam',this)" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span>
+        <span class="ni-label">Spam</span>
+      </a>
+      <a class="nav-item" id="nav-trash" onclick="showPage('trash',this)" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></span>
+        <span class="ni-label">Trash</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-item" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-2 9H6v-2h12v2z"/></svg></span>
+        <span class="ni-label">Manage subscriptions</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
+        <span class="ni-label">Manage labels</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ni-icon" style="font-size:20px;color:#444746;">+</span>
+        <span class="ni-label">Create new label</span>
+      </a>
+    </div>
+
+    <!-- Upgrade -->
+    <div class="upgrade-bar">
+      <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#444746" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="11" fill="#444746" font-family="Arial">1</text></svg>
+      <span>Upgrade</span>
+      <svg class="ub-arrow" width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </div>
+  </aside>
+
+  <!-- ═══════ INBOX CONTENT ═══════ -->
+  <div style="flex:1;display:flex;overflow:hidden;">
+
+    <div class="inbox-wrap" id="main-panel">
+
+      <!-- Toolbar -->
+      <div class="inbox-toolbar">
+        <div class="tbar-select">
+          <div class="tbar-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+          </div>
+          <div class="tbar-caret">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#444746" d="M7 10l5 5 5-5z"/></svg>
+          </div>
+        </div>
+        <div class="tbar-btn" title="Refresh">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        </div>
+        <div class="tbar-btn" title="More">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+        <div class="pg-count">
+          <span id="pg-label">1–4 of 4</span>
+          <div class="pg-arrow disabled">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </div>
+          <div class="pg-arrow disabled">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="inbox-tabs" id="inbox-tabs">
+        <div class="tab active" onclick="showTab('primary',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H4.99C3.89 3 3 3.89 3 5L3 19c0 1.11.89 2 2 2h14c1.1 0 2-.89 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H5V5h14v10z"/></svg>
+          Primary
+        </div>
+        <div class="tab" onclick="showTab('promotions',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+          Promotions
+        </div>
+        <div class="tab" onclick="showTab('social',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Social
+        </div>
+        <div class="tab" onclick="showTab('updates',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          Updates
+        </div>
+      </div>
+
+      <!-- Email list -->
+      <div class="email-list" id="email-list">
+        <!-- injected by JS -->
+      </div>
+
+    </div><!-- end inbox-wrap -->
+
+    <!-- Right strip -->
+    <div class="right-strip">
+      <div class="rs-icon" title="Calendar">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        <div class="badge"></div>
+      </div>
+      <div class="rs-icon" title="Keep">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+      </div>
+      <div class="rs-icon" title="Tasks">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM19.79 10.22c.13.57.21 1.16.21 1.78 0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8c1.58 0 3.04.46 4.28 1.25l1.44-1.44C16.1 2.67 14.13 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10c0-1.19-.22-2.33-.6-3.4l-1.61 1.62z"/></svg>
+      </div>
+      <div class="rs-icon" title="Contacts">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#444746" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="rs-divider"></div>
+      <div class="rs-plus" title="Get add-ons">+</div>
+    </div>
+
+  </div><!-- end flex row -->
+
+</div><!-- end app-body -->
+
+<!-- ═══ Detail overlay ═══ -->
+<div class="detail-overlay" id="d-overlay" onclick="closeDetail()"></div>
+<div class="detail-pane" id="d-pane">
+
+  <div id="dp-about" style="display:none;flex-direction:column;flex:1;">
+    <div class="d-topbar">
+      <div class="d-back" onclick="closeDetail()">←</div>
+      <div class="d-title">About Me</div>
+      <span class="d-tag">Intro</span>
+    </div>
+    <div class="d-body">
+      <div class="d-msg-head">
+        <div class="d-avatar">G</div>
+        <div class="d-from">
+          <div class="d-name">Gaurav &lt;gauravdotorg@gmail.com&gt;</div>
+          <div class="d-email">to me</div>
+        </div>
+        <div class="d-time">Today</div>
+      </div>
+      <div class="d-content">
+        <p>My skills are mysterious. I know things, but also don't understand anything.</p>
+        <p>GitHub is the only proof I exist in tech. Somewhere between knowing stuff and understanding nothing, I build things that somehow work — and occasionally, they even look good.</p>
+        <p>Currently: learning, experimenting, and adding to the <a href="https://github.com/gauraveverse" target="_blank">GitHub commit history</a> that confirms my existence.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="dp-skills" style="display:none;flex-direction:column;flex:1;">
+    <div class="d-topbar">
+      <div class="d-back" onclick="closeDetail()">←</div>
+      <div class="d-title">Skills &amp; Expertise</div>
+      <span class="d-tag g">Skills</span>
+    </div>
+    <div class="d-body">
+      <div class="d-msg-head">
+        <div class="d-avatar">G</div>
+        <div class="d-from">
+          <div class="d-name">Gaurav &lt;gauravdotorg@gmail.com&gt;</div>
+          <div class="d-email">to me</div>
+        </div>
+        <div class="d-time">Today</div>
+      </div>
+      <div class="d-content">
+        <h3>What I work with</h3>
+        <div class="chip-row">
+          <div class="chip">HTML</div>
+          <div class="chip">Scrolling</div>
+          <div class="chip">etc. (end of thinking capacity)</div>
+        </div>
+        <p style="color:#5f6368;font-size:13px;margin-top:8px;">More skills loading... please hold 🔄</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="dp-portfolio" style="display:none;flex-direction:column;flex:1;">
+    <div class="d-topbar">
+      <div class="d-back" onclick="closeDetail()">←</div>
+      <div class="d-title">Portfolio — 2 Projects</div>
+      <span class="d-tag y">Portfolio</span>
+    </div>
+    <div class="d-body">
+      <div class="d-msg-head">
+        <div class="d-avatar">G</div>
+        <div class="d-from">
+          <div class="d-name">Gaurav &lt;gauravdotorg@gmail.com&gt;</div>
+          <div class="d-email">to me</div>
+        </div>
+        <div class="d-time">2025</div>
+      </div>
+      <div class="d-content">
+        <a href="https://gauraveverse.github.io/banana/" target="_blank" class="proj-card">
+          <h4>🍌 Project One: Banana Website</h4>
+          <p>A simple HTML website about bananas.</p>
+          <span class="proj-link">↗ gauraveverse.github.io/banana</span>
+        </a>
+        <a href="https://gauraveverse.github.io/adidas/" target="_blank" class="proj-card">
+          <h4>👟 Project Two: Adidas Website Clone</h4>
+          <p>A responsive clone of the Adidas website with similar layout and styling using HTML and CSS.</p>
+          <span class="proj-link">↗ gauraveverse.github.io/adidas</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="dp-contact" style="display:none;flex-direction:column;flex:1;">
+    <div class="d-topbar">
+      <div class="d-back" onclick="closeDetail()">←</div>
+      <div class="d-title">Contact &amp; Socials</div>
+      <span class="d-tag r">Contact</span>
+    </div>
+    <div class="d-body">
+      <div class="d-msg-head">
+        <div class="d-avatar">G</div>
+        <div class="d-from">
+          <div class="d-name">Gaurav &lt;gauravdotorg@gmail.com&gt;</div>
+          <div class="d-email">to me</div>
+        </div>
+        <div class="d-time">2025</div>
+      </div>
+      <div class="d-content">
+        <p>Available for <strong>dihaadi</strong> or job opportunities. Feel free to reach out!</p>
+        <br>
+        <div class="c-row"><span>📧</span><a href="mailto:gauravdotorg@gmail.com">gauravdotorg@gmail.com</a></div>
+        <div class="c-row"><span>💼</span><a href="https://www.linkedin.com/in/gauraveverse" target="_blank">linkedin.com/in/gauraveverse</a></div>
+        <div class="c-row"><span>🐙</span><a href="https://github.com/gauraveverse" target="_blank">github.com/gauraveverse</a></div>
+        <a href="mailto:gauravdotorg@gmail.com" class="cta-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="white" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Compose Email
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end detail-pane -->
+
+<script>
+// ═══ DATA ═══
+const pages = {
+  inbox: {
+    title: '1–4 of 4', tabs: true,
+    rows: [
+      { id:'about',     star:true,  sender:'Gaurav',  subject:'About Me',           preview:'My skills are mysterious. I know things, but also don\'t understand anything. GitHub is the only proof', date:'Today',   unread:true  },
+      { id:'skills',    star:true,  sender:'Gaurav',  subject:'Skills & Expertise', preview:'HTML, Scrolling, etc. (end of thinking capacity) — and maybe more to come...', date:'Today',   unread:true  },
+      { id:'portfolio', star:false, sender:'Gaurav',  subject:'Portfolio — 2 Projects', preview:'🍌 Banana Website · Adidas Website Clone — Built with HTML & CSS', date:'2025',    unread:true  },
+      { id:'contact',   star:false, sender:'Gaurav',  subject:'Contact & Socials',  preview:'Available for dihaadi or job opportunities — gauravdotorg@gmail.com · LinkedIn · GitHub', date:'2025',    unread:false }
+    ]
+  },
+  starred: {
+    title: '1–2 of 2', tabs: false,
+    rows: [
+      { id:'about',  star:true, sender:'Gaurav', subject:'About Me',           preview:'My skills are mysterious. I know things, but also don\'t understand anything', date:'Today', unread:true },
+      { id:'skills', star:true, sender:'Gaurav', subject:'Skills & Expertise', preview:'HTML, Scrolling, etc. (end of thinking capacity)', date:'Today', unread:true }
+    ]
+  },
+  snoozed:   { title: '0 of 0', tabs: false, rows: [] },
+  sent:      { title: '0 of 0', tabs: false, rows: [] },
+  drafts:    { title: '0 of 0', tabs: false, rows: [] },
+  purchases: { title: '0 of 0', tabs: false, rows: [] },
+  important: { title: '1–4 of 4', tabs: false, rows: [
+    { id:'about',     star:true,  sender:'Gaurav', subject:'About Me',           preview:'My skills are mysterious. I know things', date:'Today', unread:true },
+    { id:'skills',    star:true,  sender:'Gaurav', subject:'Skills & Expertise', preview:'HTML, Scrolling, etc.', date:'Today', unread:true },
+    { id:'portfolio', star:false, sender:'Gaurav', subject:'Portfolio — 2 Projects', preview:'🍌 Banana Website · Adidas Clone', date:'2025', unread:false },
+    { id:'contact',   star:false, sender:'Gaurav', subject:'Contact & Socials',  preview:'gauravdotorg@gmail.com · LinkedIn · GitHub', date:'2025', unread:false }
+  ]},
+  scheduled: { title: '0 of 0', tabs: false, rows: [] },
+  allmail:   { title: '1–4 of 4', tabs: false, rows: [
+    { id:'about',     star:true,  sender:'Gaurav', subject:'About Me',           preview:'My skills are mysterious. I know things', date:'Today', unread:false },
+    { id:'skills',    star:true,  sender:'Gaurav', subject:'Skills & Expertise', preview:'HTML, Scrolling, etc.', date:'Today', unread:false },
+    { id:'portfolio', star:false, sender:'Gaurav', subject:'Portfolio — 2 Projects', preview:'🍌 Banana Website · Adidas Clone', date:'2025', unread:false },
+    { id:'contact',   star:false, sender:'Gaurav', subject:'Contact & Socials',  preview:'gauravdotorg@gmail.com · LinkedIn · GitHub', date:'2025', unread:false }
+  ]},
+  spam:  { title: '0 of 0', tabs: false, rows: [] },
+  trash: { title: '0 of 0', tabs: false, rows: [] },
+};
+
+const tabData = {
+  primary:    { rows: pages.inbox.rows },
+  promotions: { rows: [] },
+  social:     { rows: [] },
+  updates:    { rows: [] }
+};
+
+let currentPage = 'inbox';
+let currentTab  = 'primary';
+
+// ═══ RENDER ═══
+function actionIcons() {
+  return `<div class="e-actions">
+    <div class="ea-btn" title="Archive" onclick="event.stopPropagation()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/></svg>
+    </div>
+    <div class="ea-btn" title="Delete" onclick="event.stopPropagation()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+    </div>
+    <div class="ea-btn" title="Mark as read" onclick="event.stopPropagation()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </div>
+    <div class="ea-btn" title="Snooze" onclick="event.stopPropagation()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#444746" d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l4.75 2.85.75-1.23-4-2.37V8zM12 4a9 9 0 1 0 0 18A9 9 0 0 0 12 4zm0 16a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>
+    </div>
+  </div>`;
+}
+
+function renderRows(rows) {
+  if (!rows || rows.length === 0) {
+    return `<div class="empty-state">
+      <div class="es-icon">📭</div>
+      <h3>Nothing here</h3>
+      <p>This folder is empty.</p>
+    </div>`;
+  }
+  return rows.map(r => `
+    <div class="email-row ${r.unread ? 'unread' : ''}" onclick="openDetail('${r.id}')">
+      <div class="e-check">
+        <div class="e-cb" onclick="event.stopPropagation();this.classList.toggle('checked')"></div>
+        <span class="e-star ${r.star ? 'on' : ''}" onclick="event.stopPropagation();this.classList.toggle('on');this.textContent=this.classList.contains('on')?'★':'☆'">${r.star ? '★' : '☆'}</span>
+      </div>
+      <div class="e-sender">${r.sender}</div>
+      <div class="e-body">
+        <span class="e-subject">${r.subject}</span>
+        <span class="e-preview">${r.preview}</span>
+      </div>
+      ${actionIcons()}
+      <span class="e-date">${r.date}</span>
+    </div>
+  `).join('');
+}
+
+function showPage(page, el) {
+  event.preventDefault();
+  currentPage = page;
+  currentTab = 'primary';
+
+  // sidebar active
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // tabs visibility
+  const tabsEl = document.getElementById('inbox-tabs');
+  tabsEl.style.display = (pages[page].tabs) ? 'flex' : 'none';
+
+  // reset tabs
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab').classList.add('active');
+
+  // page label
+  document.getElementById('pg-label').textContent = pages[page].title;
+
+  // render
+  document.getElementById('email-list').innerHTML = renderRows(pages[page].rows);
+}
+
+function showTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const rows = tabData[tab] ? tabData[tab].rows : [];
+  const count = rows.length ? `1–${rows.length} of ${rows.length}` : '0 of 0';
+  document.getElementById('pg-label').textContent = count;
+  document.getElementById('email-list').innerHTML = renderRows(rows);
+}
+
+function openDetail(id) {
+  ['about','skills','portfolio','contact'].forEach(s => {
+    document.getElementById('dp-'+s).style.display = s === id ? 'flex' : 'none';
+  });
+  document.getElementById('d-pane').classList.add('open');
+  document.getElementById('d-overlay').classList.add('open');
+}
+function closeDetail() {
+  document.getElementById('d-pane').classList.remove('open');
+  document.getElementById('d-overlay').classList.remove('open');
+}
+
+function toggleMore(el) {
+  const more = document.getElementById('more-items');
+  const svg = el.querySelector('svg');
+  if (more.style.display === 'none') {
+    more.style.display = '';
+    svg.innerHTML = '<path fill="#444746" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>';
+    el.querySelector('span:last-child').textContent = 'Less';
+  } else {
+    more.style.display = 'none';
+    svg.innerHTML = '<path fill="#444746" d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>';
+    el.querySelector('span:last-child').textContent = 'More';
+  }
+}
+
+// init
+showPage('inbox', document.getElementById('nav-inbox'));
+document.getElementById('nav-inbox').classList.add('active');
+</script>
+</body>
+</html>
